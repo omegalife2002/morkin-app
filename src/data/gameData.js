@@ -43,6 +43,7 @@ export const SPECIAL_SITES = {
   '12': 'Tower of Doom ⚔',
 }
 
+
 // ── Skill definitions ──────────────────────────────────────────────────────
 export const SKILLS_DEF = [
   { id: 'animal_handling',  label: 'Animal Handling',  attr: ['CHA'],       formula: a => a.CHA },
@@ -141,9 +142,9 @@ export const TRAVEL_REF = {
 }
 
 // ── Hex map constants ──────────────────────────────────────────────────────
-export const MAP_COLS = 18
-export const MAP_ROWS = 14
-export const HEX_SIZE = 38
+export const MAP_COLS = 33
+export const MAP_ROWS = 42
+export const HEX_SIZE = 28   // flat-top hex
 
 // ── Derive computed values from character ──────────────────────────────────
 export function deriveStats(char) {
@@ -212,7 +213,7 @@ export function makeGrid() {
       }
     }
   }
-  // Starting position: Tower of the Moon
-  g['2,6'] = { ...g['2,6'], terrain: 'forest', site: 'start', explored: true, playerHere: true, notes: 'Tower of the Moon — Adventure begins!' }
+  // Starting position: Tower of the Moon (special site #1, col=11, row=29)
+  g['16,40'] = { ...g['16,40'], terrain: 'forest', site: 'start', explored: true, playerHere: true, notes: 'Tower of the Moon — Adventure begins!', specialSite: '1' }
   return g
 }
