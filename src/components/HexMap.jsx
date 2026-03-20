@@ -270,9 +270,9 @@ export default function HexMap({ grid, updateHex, movePlayer }) {
                 <span style={{ fontFamily: 'Cinzel, serif', fontSize: '0.875rem', color: 'var(--text-dim)' }}>Hex Size</span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                   <button onClick={() => updateCal({ hexSize: Math.max(5, hexSize - 1) })} style={nudgeBtn}>-1</button>
-                  <button onClick={() => updateCal({ hexSize: Math.max(5, hexSize - 0.5) })} style={{...nudgeBtn, fontSize:'0.75rem'}}>-½</button>
+                  <button onClick={() => updateCal({ hexSize: Math.max(5, hexSize - 0.5) })} style={{...nudgeBtn, fontSize:'0.75rem'}}>-0.5</button>
                   <span style={{ fontFamily: 'Cinzel, serif', fontSize: '0.9375rem', color: 'var(--gold)', minWidth: 48, textAlign: 'center' }}>{hexSize.toFixed(1)}</span>
-                  <button onClick={() => updateCal({ hexSize: hexSize + 0.5 })} style={{...nudgeBtn, fontSize:'0.75rem'}}>+½</button>
+                  <button onClick={() => updateCal({ hexSize: hexSize + 0.5 })} style={{...nudgeBtn, fontSize:'0.75rem'}}>+0.5</button>
                   <button onClick={() => updateCal({ hexSize: hexSize + 1 })} style={nudgeBtn}>+1</button>
                 </div>
               </div>
@@ -351,7 +351,7 @@ export default function HexMap({ grid, updateHex, movePlayer }) {
                 </div>
               )}
               <SectionTitle>Terrain Table (D6)</SectionTitle>
-              {[['Plains','1–3 Plains · 4 Downs · 5 Forest · 6 Mtn'],['Forest','1–3 Forest · 4 Plains · 5 Downs · 6 Mtn'],['Downs','1–2 Downs · 3–4 Plains · 5 Forest · 6 Mtn'],['Mountain','1–3 Mtn · 4 Downs · 5 Forest · 6 Plains']].map(([k,v]) => (
+              {[['Plains','1-3 Plains · 4 Downs · 5 Forest · 6 Mtn'],['Forest','1-3 Forest · 4 Plains · 5 Downs · 6 Mtn'],['Downs','1-2 Downs · 3-4 Plains · 5 Forest · 6 Mtn'],['Mountain','1-3 Mtn · 4 Downs · 5 Forest · 6 Plains']].map(([k,v]) => (
                 <div key={k} style={{ display: 'flex', gap: 6, fontSize: '0.8125rem', borderBottom: '1px solid var(--border-dim)', padding: '3px 0' }}>
                   <span style={{ color: 'var(--gold)', fontFamily: 'Cinzel, serif', minWidth: 60 }}>{k}</span>
                   <span style={{ color: 'var(--text-muted)' }}>{v}</span>
@@ -407,7 +407,7 @@ export default function HexMap({ grid, updateHex, movePlayer }) {
               </div>
               <SectionTitle>Special Site #</SectionTitle>
               <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                <input type="text" value={selCell.specialSite || ''} onChange={e => updateHex(selected, { specialSite: e.target.value })} placeholder="1–12"
+                <input type="text" value={selCell.specialSite || ''} onChange={e => updateHex(selected, { specialSite: e.target.value })} placeholder="1-12"
                   style={{ width: 56, background: '#0a0a0e', border: '1px solid var(--border)', color: 'var(--text)', fontFamily: 'Cinzel, serif', fontSize: '1rem', padding: '4px 8px', borderRadius: 2 }} />
                 {selCell.specialSite && SPECIAL_SITES[selCell.specialSite] && (
                   <span style={{ fontSize: '0.875rem', color: '#90c0ff', fontStyle: 'italic' }}>{SPECIAL_SITES[selCell.specialSite]}</span>
@@ -420,7 +420,7 @@ export default function HexMap({ grid, updateHex, movePlayer }) {
           {hexPanel === 'notes' && (
             <>
               <SectionTitle>Hex Notes</SectionTitle>
-              <textarea value={notesText} onChange={e => setNotesText(e.target.value)} onBlur={() => updateHex(selected, { notes: notesText })} placeholder="Record events, encounters, finds…" rows={7}
+              <textarea value={notesText} onChange={e => setNotesText(e.target.value)} onBlur={() => updateHex(selected, { notes: notesText })} placeholder="Record events, encounters, finds..." rows={7}
                 style={{ width: '100%', background: '#0a0a0e', border: '1px solid var(--border)', color: 'var(--text)', fontFamily: 'IM Fell English, serif', fontSize: '1rem', padding: 10, resize: 'none', borderRadius: 2, lineHeight: 1.6 }} />
             </>
           )}
@@ -447,7 +447,7 @@ export default function HexMap({ grid, updateHex, movePlayer }) {
         onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp}
         onContextMenu={e => e.preventDefault()}>
 
-        {/* Image layer — always fills the container, unaffected by hexSize */}
+        {/* Image layer  -  always fills the container, unaffected by hexSize */}
         <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
           <img
             src={`${import.meta.env.BASE_URL}morkin_map.jpg`}
@@ -463,7 +463,7 @@ export default function HexMap({ grid, updateHex, movePlayer }) {
             }}
           />
         </div>
-        {/* SVG grid layer — only this is affected by hexSize changes */}
+        {/* SVG grid layer  -  only this is affected by hexSize changes */}
         <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
         <div style={{ transform: `translate(${panOffset.x}px,${panOffset.y}px) scale(${zoom})`, transformOrigin: '0 0', position: 'relative', width: SVG_W, height: SVG_H }}>
           <svg width={SVG_W} height={SVG_H} style={{ position: 'absolute', top: 0, left: 0 }}>
