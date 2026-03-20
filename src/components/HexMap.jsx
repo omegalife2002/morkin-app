@@ -234,8 +234,8 @@ export default function HexMap({ grid, updateHex, movePlayer }) {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
                 <span style={{ fontFamily: 'Cinzel, serif', fontSize: '0.875rem', color: 'var(--text-dim)' }}>Grid X</span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <button onClick={() => updateCal({ ox: ox - 5 })} style={nudgeBtn}>−5</button>
-                  <button onClick={() => updateCal({ ox: ox - 1 })} style={nudgeBtn}>−1</button>
+                  <button onClick={() => updateCal({ ox: ox - 5 })} style={nudgeBtn}>-5</button>
+                  <button onClick={() => updateCal({ ox: ox - 1 })} style={nudgeBtn}>-1</button>
                   <span style={{ fontFamily: 'Cinzel, serif', fontSize: '0.9375rem', color: 'var(--gold)', minWidth: 48, textAlign: 'center' }}>{ox.toFixed(1)}</span>
                   <button onClick={() => updateCal({ ox: ox + 1 })} style={nudgeBtn}>+1</button>
                   <button onClick={() => updateCal({ ox: ox + 5 })} style={nudgeBtn}>+5</button>
@@ -251,8 +251,8 @@ export default function HexMap({ grid, updateHex, movePlayer }) {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
                 <span style={{ fontFamily: 'Cinzel, serif', fontSize: '0.875rem', color: 'var(--text-dim)' }}>Grid Y</span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <button onClick={() => updateCal({ oy: oy - 5 })} style={nudgeBtn}>−5</button>
-                  <button onClick={() => updateCal({ oy: oy - 1 })} style={nudgeBtn}>−1</button>
+                  <button onClick={() => updateCal({ oy: oy - 5 })} style={nudgeBtn}>-5</button>
+                  <button onClick={() => updateCal({ oy: oy - 1 })} style={nudgeBtn}>-1</button>
                   <span style={{ fontFamily: 'Cinzel, serif', fontSize: '0.9375rem', color: 'var(--gold)', minWidth: 48, textAlign: 'center' }}>{oy.toFixed(1)}</span>
                   <button onClick={() => updateCal({ oy: oy + 1 })} style={nudgeBtn}>+1</button>
                   <button onClick={() => updateCal({ oy: oy + 5 })} style={nudgeBtn}>+5</button>
@@ -269,8 +269,8 @@ export default function HexMap({ grid, updateHex, movePlayer }) {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
                 <span style={{ fontFamily: 'Cinzel, serif', fontSize: '0.875rem', color: 'var(--text-dim)' }}>Hex Size</span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <button onClick={() => updateCal({ hexSize: Math.max(5, hexSize - 1) })} style={nudgeBtn}>−1</button>
-                  <button onClick={() => updateCal({ hexSize: Math.max(5, hexSize - 0.5) })} style={{...nudgeBtn, fontSize:'0.75rem'}}>−½</button>
+                  <button onClick={() => updateCal({ hexSize: Math.max(5, hexSize - 1) })} style={nudgeBtn}>-1</button>
+                  <button onClick={() => updateCal({ hexSize: Math.max(5, hexSize - 0.5) })} style={{...nudgeBtn, fontSize:'0.75rem'}}>-½</button>
                   <span style={{ fontFamily: 'Cinzel, serif', fontSize: '0.9375rem', color: 'var(--gold)', minWidth: 48, textAlign: 'center' }}>{hexSize.toFixed(1)}</span>
                   <button onClick={() => updateCal({ hexSize: hexSize + 0.5 })} style={{...nudgeBtn, fontSize:'0.75rem'}}>+½</button>
                   <button onClick={() => updateCal({ hexSize: hexSize + 1 })} style={nudgeBtn}>+1</button>
@@ -492,7 +492,7 @@ export default function HexMap({ grid, updateHex, movePlayer }) {
         <div style={{ position: 'absolute', bottom: 14, right: 14, display: 'flex', gap: 4, zIndex: 10 }}>
           <button onClick={() => setZoom(z => Math.min(3, z + 0.15))} style={zoomBtn}>+</button>
           <button onClick={() => setZoom(1.0)} style={{ ...zoomBtn, padding: '0 12px', fontSize: '0.875rem' }}>{Math.round(zoom * 100)}%</button>
-          <button onClick={() => setZoom(z => Math.max(0.2, z - 0.15))} style={zoomBtn}>−</button>
+          <button onClick={() => setZoom(z => Math.max(0.2, z - 0.15))} style={zoomBtn}>-</button>
         </div>
 
         {/* Lock indicator */}
