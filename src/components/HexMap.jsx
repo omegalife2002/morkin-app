@@ -46,6 +46,13 @@ const SITES_ROLL_TABLE = [
   'Tower','Tower','Keep','Keep','Citadel','Village','Village','Henge','Lith','Snowhall',
 ]
 
+
+// Display hex coordinates as 1-based for the player
+function displayCoord(key) {
+  const [c, r] = key.split(',').map(Number)
+  return `${c + 1}, ${r + 1}`
+}
+
 // ── Single hex cell ───────────────────────────────────────────────────────────
 function HexCell({ col, row, cell, isSelected, onClick }) {
   const { x: cx, y: cy } = hexCenter(col, row)
@@ -103,7 +110,7 @@ function HexCell({ col, row, cell, isSelected, onClick }) {
       {isSelected && isUnknown && (
         <text x={cx} y={cy + 1} textAnchor="middle" dominantBaseline="middle"
           fontSize={9} fill="#5a5060" style={{ userSelect: 'none' }}>
-          {col},{row}
+          {col+1},{row+1}
         </text>
       )}
 
@@ -122,11 +129,11 @@ function HexCell({ col, row, cell, isSelected, onClick }) {
 
 // ── Main HexMap ───────────────────────────────────────────────────────────────
 export default function HexMap({ grid, updateHex, movePlayer }) {
-  const [selected, setSelected]     = useState('16,40')
+  const [selected, setSelected]     = useState('16,41')
   const [offset, setOffset]         = useState({ x: 0, y: 0 })
   const [zoom, setZoom]             = useState(0.8)
   const [dragStart, setDragStart]   = useState(null)
-  const [notesText, setNotesText]   = useState(grid['16,40']?.notes || '')
+  const [notesText, setNotesText]   = useState(grid['16,41']?.notes || '')
   const [hexPanel, setHexPanel]     = useState('reveal')
   const [diceResult, setDiceResult] = useState(null)
   const containerRef = useRef()
@@ -244,7 +251,7 @@ export default function HexMap({ grid, updateHex, movePlayer }) {
           {/* Hex identity */}
           <div style={{ marginBottom: 12 }}>
             <div style={{ fontFamily: 'Cinzel, serif', fontSize: '1.125rem', color: 'var(--gold)', letterSpacing: 1, marginBottom: 4 }}>
-              HEX {selected}
+              HEX {displayCoord(selected)}
             </div>
             {selCell.specialSite && SPECIAL_SITES[selCell.specialSite] && (
               <div style={{ fontSize: '0.875rem', color: '#90c0ff', marginBottom: 4 }}>
@@ -439,7 +446,7 @@ export default function HexMap({ grid, updateHex, movePlayer }) {
       >
         <div style={{ transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`, transformOrigin: '0 0', position: 'relative' }}>
           {/* Map background image */}
-          <img src={`${import.meta.env.BASE_URL}morkin_map.jpg`} alt="Midnight map"
+          <img src="/morkin_map.jpg" alt="Midnight map"
             style={{ position: 'absolute', top: 0, left: 0, width: SVG_W, height: SVG_H, pointerEvents: 'none', userSelect: 'none', opacity: 0.85 }}
           />
           <svg width={SVG_W} height={SVG_H} style={{ display: 'block', position: 'relative' }}>
@@ -468,7 +475,7 @@ export default function HexMap({ grid, updateHex, movePlayer }) {
 
         {/* Grid size indicator */}
         <div style={{ position: 'absolute', top: 10, right: 14, fontFamily: 'Cinzel, serif', fontSize: '0.875rem', color: 'var(--text-faint)', zIndex: 10 }}>
-          {MAP_COLS} × {MAP_ROWS}
+          {MAP_COLS} × {MAP_ROWS} (1–{MAP_COLS}, 1–{MAP_ROWS})
         </div>
       </div>
     </div>

@@ -142,11 +142,11 @@ export const TRAVEL_REF = {
 }
 
 // ── Hex map constants ──────────────────────────────────────────────────────
-export const MAP_COLS      = 33
-export const MAP_ROWS      = 42
-export const HEX_SIZE      = 20   // flat-top, calibrated to Copilot map image
-export const MAP_OFFSET_X  = 45.0
-export const MAP_OFFSET_Y  = 71.4
+export const MAP_COLS     = 34
+export const MAP_ROWS     = 42
+export const HEX_SIZE     = 20
+export const MAP_OFFSET_X = 38.8
+export const MAP_OFFSET_Y = 84.5
 
 // ── Derive computed values from character ──────────────────────────────────
 export function deriveStats(char) {
@@ -216,6 +216,6 @@ export function makeGrid() {
     }
   }
   // Starting position: Tower of the Moon (special site #1, col=11, row=29)
-  g['16,40'] = { ...g['16,40'], terrain: 'forest', site: 'start', explored: true, playerHere: true, notes: 'Tower of the Moon — Adventure begins!', specialSite: '1' }
+  g['16,41'] = { ...g['16,41'], terrain: 'forest', site: 'start', explored: true, playerHere: true, notes: 'Tower of the Moon — Adventure begins!', specialSite: '1' }
   return g
 }
