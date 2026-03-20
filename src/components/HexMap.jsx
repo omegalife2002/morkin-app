@@ -447,14 +447,25 @@ export default function HexMap({ grid, updateHex, movePlayer }) {
         onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp}
         onContextMenu={e => e.preventDefault()}>
 
-        <div style={{ transform: `translate(${panOffset.x}px,${panOffset.y}px) scale(${zoom})`, transformOrigin: '0 0', position: 'relative', width: SVG_W, height: SVG_H }}>
-          {/* Background image — fixed, never moves with grid */}
+        {/* Image layer — always fills the container, unaffected by hexSize */}
+        <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
           <img
             src={`${import.meta.env.BASE_URL}morkin_map.jpg`}
             alt="map"
-            style={{ position: 'absolute', top: 0, left: 0, width: SVG_W, height: SVG_H, opacity: 0.88, pointerEvents: 'none', userSelect: 'none' }}
+            style={{
+              position: 'absolute', top: 0, left: 0,
+              width: '100%', height: '100%',
+              objectFit: 'fill',
+              opacity: 0.88,
+              userSelect: 'none',
+              transform: `translate(${panOffset.x}px,${panOffset.y}px) scale(${zoom})`,
+              transformOrigin: '0 0',
+            }}
           />
-          {/* SVG hex grid — shifts only via ox/oy */}
+        </div>
+        {/* SVG grid layer — only this is affected by hexSize changes */}
+        <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
+        <div style={{ transform: `translate(${panOffset.x}px,${panOffset.y}px) scale(${zoom})`, transformOrigin: '0 0', position: 'relative', width: SVG_W, height: SVG_H }}>
           <svg width={SVG_W} height={SVG_H} style={{ position: 'absolute', top: 0, left: 0 }}>
             {Array.from({ length: MAP_COLS }, (_, c) =>
               Array.from({ length: MAP_ROWS }, (_, r) => {
@@ -464,7 +475,7 @@ export default function HexMap({ grid, updateHex, movePlayer }) {
               })
             )}
           </svg>
-          {/* Calibration crosshair — shows hex 1,1 origin when unlocked */}
+          {/* Calibration crosshair */}
           {calOpen && (
             <svg width={SVG_W} height={SVG_H} style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}>
               <line x1={ox} y1={0} x2={ox} y2={SVG_H} stroke="#ff4040" strokeWidth={1} opacity={0.4} strokeDasharray="4 4" />
@@ -473,6 +484,8 @@ export default function HexMap({ grid, updateHex, movePlayer }) {
               <text x={ox + 10} y={oy - 8} fontSize={11} fill="#ff6060" opacity={0.9}>grid origin ({ox.toFixed(0)},{oy.toFixed(0)})</text>
             </svg>
           )}
+        </div>
+        </div>
         </div>
 
         {/* Zoom controls */}
