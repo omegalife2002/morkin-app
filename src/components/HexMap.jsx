@@ -439,7 +439,7 @@ export default function HexMap({ grid, updateHex, movePlayer }) {
       >
         <div style={{ transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`, transformOrigin: '0 0', position: 'relative' }}>
           {/* Map background image */}
-          <img src="/morkin_map.jpg" alt="Midnight map"
+          <img src={`${import.meta.env.BASE_URL}morkin_map.jpg`} alt="Midnight map"
             style={{ position: 'absolute', top: 0, left: 0, width: SVG_W, height: SVG_H, pointerEvents: 'none', userSelect: 'none', opacity: 0.85 }}
           />
           <svg width={SVG_W} height={SVG_H} style={{ display: 'block', position: 'relative' }}>
