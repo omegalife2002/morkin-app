@@ -447,25 +447,21 @@ export default function HexMap({ grid, updateHex, movePlayer }) {
         onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp}
         onContextMenu={e => e.preventDefault()}>
 
-        {/* Image layer  -  always fills the container, unaffected by hexSize */}
-        <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
-          <img
-            src={`${import.meta.env.BASE_URL}morkin_map.jpg`}
-            alt="map"
-            style={{
-              position: 'absolute', top: 0, left: 0,
-              width: '100%', height: '100%',
-              objectFit: 'fill',
-              opacity: 0.88,
-              userSelect: 'none',
-              transform: `translate(${panOffset.x}px,${panOffset.y}px) scale(${zoom})`,
-              transformOrigin: '0 0',
-            }}
-          />
-        </div>
-        {/* SVG grid layer  -  only this is affected by hexSize changes */}
+        {/* Single scaled container — image + SVG grid transform together */}
         <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
           <div style={{ transform: `translate(${panOffset.x}px,${panOffset.y}px) scale(${zoom})`, transformOrigin: '0 0', position: 'relative', width: SVG_W, height: SVG_H }}>
+            <img
+              src={`${import.meta.env.BASE_URL}morkin_map.jpg`}
+              alt="map"
+              style={{
+                position: 'absolute', top: 0, left: 0,
+                width: '100%', height: '100%',
+                objectFit: 'fill',
+                opacity: 0.88,
+                userSelect: 'none',
+                pointerEvents: 'none',
+              }}
+            />
             <svg width={SVG_W} height={SVG_H} style={{ position: 'absolute', top: 0, left: 0 }}>
               {Array.from({ length: MAP_COLS }, (_, c) =>
                 Array.from({ length: MAP_ROWS }, (_, r) => {
