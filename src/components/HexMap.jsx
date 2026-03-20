@@ -465,27 +465,26 @@ export default function HexMap({ grid, updateHex, movePlayer }) {
         </div>
         {/* SVG grid layer  -  only this is affected by hexSize changes */}
         <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
-        <div style={{ transform: `translate(${panOffset.x}px,${panOffset.y}px) scale(${zoom})`, transformOrigin: '0 0', position: 'relative', width: SVG_W, height: SVG_H }}>
-          <svg width={SVG_W} height={SVG_H} style={{ position: 'absolute', top: 0, left: 0 }}>
-            {Array.from({ length: MAP_COLS }, (_, c) =>
-              Array.from({ length: MAP_ROWS }, (_, r) => {
-                const key = `${c},${r}`
-                const cell = grid[key] || { terrain: 'unknown', site: 'none', explored: false, playerHere: false, notes: '', specialSite: '', questedHere: false, soughtHere: false }
-                return <HexCell key={key} col={c} row={r} cell={cell} isSelected={selected === key} onClick={handleHexClick} ox={ox} oy={oy} hs={hexSize} />
-              })
-            )}
-          </svg>
-          {/* Calibration crosshair */}
-          {calOpen && (
-            <svg width={SVG_W} height={SVG_H} style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}>
-              <line x1={ox} y1={0} x2={ox} y2={SVG_H} stroke="#ff4040" strokeWidth={1} opacity={0.4} strokeDasharray="4 4" />
-              <line x1={0} y1={oy} x2={SVG_W} y2={oy} stroke="#ff4040" strokeWidth={1} opacity={0.4} strokeDasharray="4 4" />
-              <circle cx={ox} cy={oy} r={6} fill="none" stroke="#ff4040" strokeWidth={1.5} opacity={0.7} />
-              <text x={ox + 10} y={oy - 8} fontSize={11} fill="#ff6060" opacity={0.9}>grid origin ({ox.toFixed(0)},{oy.toFixed(0)})</text>
+          <div style={{ transform: `translate(${panOffset.x}px,${panOffset.y}px) scale(${zoom})`, transformOrigin: '0 0', position: 'relative', width: SVG_W, height: SVG_H }}>
+            <svg width={SVG_W} height={SVG_H} style={{ position: 'absolute', top: 0, left: 0 }}>
+              {Array.from({ length: MAP_COLS }, (_, c) =>
+                Array.from({ length: MAP_ROWS }, (_, r) => {
+                  const key = `${c},${r}`
+                  const cell = grid[key] || { terrain: 'unknown', site: 'none', explored: false, playerHere: false, notes: '', specialSite: '', questedHere: false, soughtHere: false }
+                  return <HexCell key={key} col={c} row={r} cell={cell} isSelected={selected === key} onClick={handleHexClick} ox={ox} oy={oy} hs={hexSize} />
+                })
+              )}
             </svg>
-          )}
-        </div>
-        </div>
+            {/* Calibration crosshair */}
+            {calOpen && (
+              <svg width={SVG_W} height={SVG_H} style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}>
+                <line x1={ox} y1={0} x2={ox} y2={SVG_H} stroke="#ff4040" strokeWidth={1} opacity={0.4} strokeDasharray="4 4" />
+                <line x1={0} y1={oy} x2={SVG_W} y2={oy} stroke="#ff4040" strokeWidth={1} opacity={0.4} strokeDasharray="4 4" />
+                <circle cx={ox} cy={oy} r={6} fill="none" stroke="#ff4040" strokeWidth={1.5} opacity={0.7} />
+                <text x={ox + 10} y={oy - 8} fontSize={11} fill="#ff6060" opacity={0.9}>grid origin ({ox.toFixed(0)},{oy.toFixed(0)})</text>
+              </svg>
+            )}
+          </div>
         </div>
 
         {/* Zoom controls */}
