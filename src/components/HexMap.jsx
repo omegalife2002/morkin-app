@@ -3,13 +3,14 @@ import { TERRAIN, SITES, SPECIAL_SITES, TRAVEL_REF, MAP_COLS, MAP_ROWS, HEX_SIZE
 import { MiniBtn, SectionTitle } from './UI'
 
 // ── Hex geometry (flat-top) ───────────────────────────────────────────────────
-const CS = 1.5 * HEX_SIZE
+const CS = 1.5 * HEX_SIZE  // default, actual from cal.hexSize
 const RS = Math.sqrt(3) * HEX_SIZE
 
-function hexCenter(col, row, ox, oy) {
+function hexCenter(col, row, ox, oy, hs) {
+  const cs = 1.5 * hs, rs = Math.sqrt(3) * hs
   return {
-    x: ox + col * CS,
-    y: oy + row * RS + (col % 2 === 1 ? RS / 2 : 0),
+    x: ox + col * cs,
+    y: oy + row * rs + (col % 2 === 1 ? rs / 2 : 0),
   }
 }
 
@@ -20,8 +21,7 @@ function hexPoints(cx, cy, size) {
   }).join(' ')
 }
 
-const SVG_W = MAP_COLS * CS + HEX_SIZE * 4
-const SVG_H = MAP_ROWS * RS + RS * 2 + 100
+// SVG dimensions computed dynamically based on hexSize (see inside component)
 
 // ── Calibration persistence ───────────────────────────────────────────────────
 const CAL_KEY = 'morkin-cal-v2'
@@ -30,7 +30,7 @@ function loadCal() {
 }
 function saveCal(c) { localStorage.setItem(CAL_KEY, JSON.stringify(c)) }
 
-const DEFAULT_CAL = { ox: MAP_OFFSET_X, oy: MAP_OFFSET_Y, locked: false }
+const DEFAULT_CAL = { ox: MAP_OFFSET_X, oy: MAP_OFFSET_Y, hexSize: HEX_SIZE, locked: false }
 
 // ── Terrain colours ───────────────────────────────────────────────────────────
 const TC = {
@@ -57,9 +57,9 @@ const TERRAIN_TABLE = {
 const SITES_TABLE = ['Tower','Tower','Keep','Keep','Citadel','Village','Village','Henge','Lith','Snowhall']
 
 // ── HexCell ───────────────────────────────────────────────────────────────────
-function HexCell({ col, row, cell, isSelected, onClick, ox, oy }) {
-  const { x: cx, y: cy } = hexCenter(col, row, ox, oy)
-  const pts = hexPoints(cx, cy, HEX_SIZE - 1)
+function HexCell({ col, row, cell, isSelected, onClick, ox, oy, hs }) {
+  const { x: cx, y: cy } = hexCenter(col, row, ox, oy, hs)
+  const pts = hexPoints(cx, cy, hs - 1)
   const s = SITES[cell.site]
   const unknown = !cell.explored
   const tc = TC[cell.terrain] || TC.unknown
@@ -76,7 +76,7 @@ function HexCell({ col, row, cell, isSelected, onClick, ox, oy }) {
     <g onClick={() => onClick(col, row)} style={{ cursor: 'pointer' }}>
       <polygon points={pts} fill={fill} stroke={stroke} strokeWidth={sw} style={{ transition: 'fill 0.18s' }} />
       {!unknown && cell.terrain !== 'unknown' && (
-        <text x={cx} y={cy + HEX_SIZE - 5} textAnchor="middle" fontSize={7} fill={tc.stroke} opacity={0.5} style={{ userSelect: 'none' }}>
+        <text x={cx} y={cy + hs - 5} textAnchor="middle" fontSize={7} fill={tc.stroke} opacity={0.5} style={{ userSelect: 'none' }}>
           {cell.terrain === 'mountain' ? '▲' : cell.terrain === 'forest' ? '♦' : cell.terrain === 'downs' ? '~' : cell.terrain === 'wastes' ? '✦' : ''}
         </text>
       )}
@@ -92,12 +92,12 @@ function HexCell({ col, row, cell, isSelected, onClick, ox, oy }) {
         </>
       )}
       {isSelected && unknown && (
-        <text x={cx} y={cy + 1} textAnchor="middle" dominantBaseline="middle" fontSize={8} fill="#6a6080" style={{ userSelect: 'none' }}>
+        <text x={cx} y={cy + 1} textAnchor="middle" dominantBaseline="middle" fontSize={Math.max(7, hs*0.45)} fill="#6a6080" style={{ userSelect: 'none' }}>
           {col + 1},{row + 1}
         </text>
       )}
-      {cell.questedHere && !unknown && <text x={cx - 10} y={cy - HEX_SIZE + 7} fontSize={8} fill="#e06060" opacity={0.9} style={{ userSelect: 'none' }}>⚔</text>}
-      {cell.notes && !unknown && <text x={cx + 5} y={cy - HEX_SIZE + 7} fontSize={8} fill="#90c0ff" opacity={0.9} style={{ userSelect: 'none' }}>✎</text>}
+      {cell.questedHere && !unknown && <text x={cx - 10} y={cy - hs + 7} fontSize={8} fill="#e06060" opacity={0.9} style={{ userSelect: 'none' }}>⚔</text>}
+      {cell.notes && !unknown && <text x={cx + 5} y={cy - hs + 7} fontSize={8} fill="#90c0ff" opacity={0.9} style={{ userSelect: 'none' }}>✎</text>}
     </g>
   )
 }
@@ -117,7 +117,11 @@ export default function HexMap({ grid, updateHex, movePlayer }) {
   const [diceResult, setDiceResult] = useState(null)
   const containerRef = useRef()
 
-  const { ox, oy } = cal
+  const { ox, oy, hexSize } = cal
+  const dynCS = 1.5 * hexSize
+  const dynRS = Math.sqrt(3) * hexSize
+  const SVG_W = MAP_COLS * dynCS + hexSize * 4
+  const SVG_H = MAP_ROWS * dynRS + dynRS * 2 + 100
 
   const selCell = grid[selected] || { terrain: 'unknown', site: 'none', explored: false, playerHere: false, notes: '', specialSite: '', questedHere: false, soughtHere: false }
   const [selCol, selRow] = selected.split(',').map(Number)
@@ -254,12 +258,29 @@ export default function HexMap({ grid, updateHex, movePlayer }) {
                 style={{ width: '100%', accentColor: 'var(--gold)' }} />
             </div>
 
+
+            {/* Hex Size */}
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                <span style={{ fontFamily: 'Cinzel, serif', fontSize: '0.875rem', color: 'var(--text-dim)' }}>Hex Size</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <button onClick={() => updateCal({ hexSize: Math.max(5, hexSize - 1) })} style={nudgeBtn}>−1</button>
+                  <button onClick={() => updateCal({ hexSize: Math.max(5, hexSize - 0.5) })} style={{...nudgeBtn, fontSize:'0.75rem'}}>−½</button>
+                  <span style={{ fontFamily: 'Cinzel, serif', fontSize: '0.9375rem', color: 'var(--gold)', minWidth: 48, textAlign: 'center' }}>{hexSize.toFixed(1)}</span>
+                  <button onClick={() => updateCal({ hexSize: hexSize + 0.5 })} style={{...nudgeBtn, fontSize:'0.75rem'}}>+½</button>
+                  <button onClick={() => updateCal({ hexSize: hexSize + 1 })} style={nudgeBtn}>+1</button>
+                </div>
+              </div>
+              <input type="range" min={8} max={50} step={0.5} value={hexSize}
+                onChange={e => updateCal({ hexSize: Number(e.target.value) })}
+                style={{ width: '100%', accentColor: 'var(--gold)' }} />
+            </div>
             <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
               <button onClick={lockCal} style={{ flex: 1, padding: '8px', fontFamily: 'Cinzel, serif', fontSize: '0.875rem', background: '#1e1800', border: '1px solid var(--gold)', color: 'var(--gold)', cursor: 'pointer', borderRadius: 2, letterSpacing: 1 }}>
                 🔒 LOCK POSITION
               </button>
               <span style={{ fontSize: '0.75rem', color: 'var(--text-faint)', fontFamily: 'Cinzel, serif' }}>
-                ox={ox.toFixed(0)} oy={oy.toFixed(0)}
+                ox={ox.toFixed(0)} oy={oy.toFixed(0)} sz={hexSize.toFixed(1)}
               </span>
             </div>
           </div>
@@ -434,7 +455,7 @@ export default function HexMap({ grid, updateHex, movePlayer }) {
               Array.from({ length: MAP_ROWS }, (_, r) => {
                 const key = `${c},${r}`
                 const cell = grid[key] || { terrain: 'unknown', site: 'none', explored: false, playerHere: false, notes: '', specialSite: '', questedHere: false, soughtHere: false }
-                return <HexCell key={key} col={c} row={r} cell={cell} isSelected={selected === key} onClick={handleHexClick} ox={ox} oy={oy} />
+                return <HexCell key={key} col={c} row={r} cell={cell} isSelected={selected === key} onClick={handleHexClick} ox={ox} oy={oy} hs={hexSize} />
               })
             )}
           </svg>
