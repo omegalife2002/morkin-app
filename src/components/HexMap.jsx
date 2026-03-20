@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
-import { TERRAIN, SITES, SPECIAL_SITES, TRAVEL_REF, MAP_COLS, MAP_ROWS, HEX_SIZE } from '../data/gameData'
+import { TERRAIN, SITES, SPECIAL_SITES, TRAVEL_REF, MAP_COLS, MAP_ROWS, HEX_SIZE, MAP_OFFSET_X, MAP_OFFSET_Y } from '../data/gameData'
 import { MiniBtn, SectionTitle } from './UI'
 
 // ── Flat-top hex geometry ─────────────────────────────────────────────────────
@@ -8,8 +8,8 @@ const ROW_SPACING = Math.sqrt(3) * HEX_SIZE
 
 function hexCenter(col, row) {
   return {
-    x: HEX_SIZE + col * COL_SPACING,
-    y: HEX_SIZE + row * ROW_SPACING + (col % 2 === 1 ? ROW_SPACING / 2 : 0),
+    x: MAP_OFFSET_X + col * COL_SPACING,
+    y: MAP_OFFSET_Y + row * ROW_SPACING + (col % 2 === 1 ? ROW_SPACING / 2 : 0),
   }
 }
 
@@ -20,16 +20,16 @@ function flatHexPoints(cx, cy, size) {
   }).join(' ')
 }
 
-const SVG_W = MAP_COLS * COL_SPACING + HEX_SIZE * 2
-const SVG_H = MAP_ROWS * ROW_SPACING + ROW_SPACING + HEX_SIZE * 2
+const SVG_W = MAP_COLS * COL_SPACING + MAP_OFFSET_X + HEX_SIZE * 2
+const SVG_H = MAP_ROWS * ROW_SPACING + MAP_OFFSET_Y + ROW_SPACING
 
 const TERRAIN_COLORS = {
-  unknown:  { fill: '#0d0d12', stroke: '#1e1e28' },
-  plains:   { fill: '#1e2a14', stroke: '#3a5228' },
-  forest:   { fill: '#102010', stroke: '#1e4020' },
-  downs:    { fill: '#221e10', stroke: '#443c1e' },
-  mountain: { fill: '#1a1a1a', stroke: '#383838' },
-  wastes:   { fill: '#101420', stroke: '#1e2840' },
+  unknown:  { fill: 'rgba(4,4,10,0.72)',  stroke: 'rgba(50,45,65,0.8)' },
+  plains:   { fill: 'rgba(30,42,20,0.18)', stroke: '#4a7035' },
+  forest:   { fill: 'rgba(10,32,10,0.22)', stroke: '#2a5828' },
+  downs:    { fill: 'rgba(34,30,16,0.18)', stroke: '#5a5030' },
+  mountain: { fill: 'rgba(20,20,20,0.20)', stroke: '#505050' },
+  wastes:   { fill: 'rgba(16,20,32,0.30)', stroke: '#2a3858' },
 }
 
 // Terrain table roll results (D6, influenced by adjacent terrain)
@@ -56,12 +56,12 @@ function HexCell({ col, row, cell, isSelected, onClick }) {
   const isUnknown = !cell.explored
   const strokeColor = isSelected      ? '#d4a843'
                     : cell.playerHere ? '#f0dc80'
-                    : isUnknown       ? '#252530'
+                    : isUnknown       ? 'rgba(50,45,70,0.7)'
                     : tc.stroke
   const strokeWidth = isSelected ? 2.5 : cell.playerHere ? 2 : 1
-  const fillColor   = isSelected      ? (isUnknown ? '#1a1820' : tc.fill + 'dd')
-                    : cell.playerHere ? (isUnknown ? '#151520' : tc.fill)
-                    : isUnknown       ? '#0d0d12'
+  const fillColor   = isSelected      ? (isUnknown ? 'rgba(24,20,36,0.85)' : 'rgba(212,168,67,0.2)')
+                    : cell.playerHere ? (isUnknown ? 'rgba(18,16,28,0.85)' : 'rgba(240,220,120,0.15)')
+                    : isUnknown       ? 'rgba(4,4,10,0.72)'
                     : tc.fill
 
   return (
@@ -437,12 +437,13 @@ export default function HexMap({ grid, updateHex, movePlayer }) {
         onMouseUp={handleMouseUp}
         onContextMenu={e => e.preventDefault()}
       >
-        <div style={{ transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`, transformOrigin: '0 0' }}>
-          <svg width={SVG_W} height={SVG_H} style={{ display: 'block' }}>
-            {/* Background */}
-            <rect width={SVG_W} height={SVG_H} fill="#06060a" />
-
-            {/* Subtle grid lines for all hexes */}
+        <div style={{ transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`, transformOrigin: '0 0', position: 'relative' }}>
+          {/* Map background image */}
+          <img src="/morkin_map.jpg" alt="Midnight map"
+            style={{ position: 'absolute', top: 0, left: 0, width: SVG_W, height: SVG_H, pointerEvents: 'none', userSelect: 'none', opacity: 0.85 }}
+          />
+          <svg width={SVG_W} height={SVG_H} style={{ display: 'block', position: 'relative' }}>
+            {/* Hex cells - transparent fill shows map image */}
             {Array.from({ length: MAP_COLS }, (_, c) =>
               Array.from({ length: MAP_ROWS }, (_, r) => {
                 const key = `${c},${r}`

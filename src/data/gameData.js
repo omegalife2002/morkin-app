@@ -142,9 +142,11 @@ export const TRAVEL_REF = {
 }
 
 // ── Hex map constants ──────────────────────────────────────────────────────
-export const MAP_COLS = 33
-export const MAP_ROWS = 42
-export const HEX_SIZE = 28   // flat-top hex
+export const MAP_COLS      = 33
+export const MAP_ROWS      = 42
+export const HEX_SIZE      = 20   // flat-top, calibrated to Copilot map image
+export const MAP_OFFSET_X  = 45.0
+export const MAP_OFFSET_Y  = 71.4
 
 // ── Derive computed values from character ──────────────────────────────────
 export function deriveStats(char) {
