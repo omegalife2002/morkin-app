@@ -145,8 +145,9 @@ export const TRAVEL_REF = {
 export const MAP_COLS     = 34
 export const MAP_ROWS     = 42
 export const HEX_SIZE     = 20
-export const MAP_OFFSET_X = 38.8
-export const MAP_OFFSET_Y = 84.5
+export const MAP_OFFSET_X = 20.0
+export const MAP_OFFSET_Y = 56.6
+
 
 // ── Derive computed values from character ──────────────────────────────────
 export function deriveStats(char) {
