@@ -26,7 +26,12 @@ function hexPoints(cx, cy, size) {
 // ── Calibration persistence ───────────────────────────────────────────────────
 const CAL_KEY = 'morkin-cal-v2'
 function loadCal() {
-  try { return JSON.parse(localStorage.getItem(CAL_KEY)) } catch { return null }
+  try {
+    const saved = JSON.parse(localStorage.getItem(CAL_KEY))
+    if (!saved) return null
+    // Merge with defaults so any missing fields (e.g. hexSize added later) are filled in
+    return { ...DEFAULT_CAL, ...saved }
+  } catch { return null }
 }
 function saveCal(c) { localStorage.setItem(CAL_KEY, JSON.stringify(c)) }
 
